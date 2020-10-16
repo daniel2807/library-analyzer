@@ -46,11 +46,11 @@ function filterSummary(arr, searchKey) {
 
 const goToCompare = (history, selectedPackages) => {
     if(selectedPackages.length > 0) {
-        history.push(`/compare?query=${selectedPackages.join(',')}`);
+        history.push(`/test-app/compare?query=${selectedPackages.join(',')}`);
         return;
     }
 
-    history.push('/compare');
+    history.push('/test-app/compare');
 }
 
 const Home = () => {

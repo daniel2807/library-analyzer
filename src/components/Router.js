@@ -25,7 +25,7 @@ const SideRouter = () => (
             <Toolbar style={{backgroundColor: 'rgb(40, 40, 40)'}}>
                 {/* <Tooltip title='home'> */}
                     <Button style={{width: 200}}>
-                        <Link to='/'>
+                        <Link to='/test-app/'>
                             <img alt="MaibornWolff" height="50" src={logo} />
                         </Link>
                     </Button>
@@ -34,15 +34,15 @@ const SideRouter = () => (
                 
                 {/* <Tooltip title='compare without choosen libraries'> */}
                     <Button style={{width: 200, marginLeft: '10%'}}>
-                        <Link to='/compare'>Compare</Link>
+                        <Link to='/test-app/compare'>Compare</Link>
                     </Button>
                 {/* </Tooltip> */}
             </Toolbar>
         </AppBar>
 
         <Switch>
-            <Route exact path='/' component={Home} />
-            <Route exact path='/compare' component={Compare} />
+            <Route exact path='/test-app/' component={Home} />
+            <Route exact path='/test-app/compare' component={Compare} />
             <Route component={Error} />
         </Switch>
     </Router>
