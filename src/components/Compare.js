@@ -2,6 +2,7 @@ import React, {useCallback, useState, useEffect} from 'react';
 import librarySummary from '../summary_of_libraries.json';
 import {useLocation, useHistory} from 'react-router';
 import CompareCard from './CompareCard';
+import Footer from './Footer';
 import {compareByFinalScore, compareByName, compareByDownloads, compareByStars} from './funktions';
 
 import {
@@ -13,6 +14,7 @@ import {
   Menu,
   MenuItem,
   Grid,
+  makeStyles,
 } from '@material-ui/core';
 
 import {
@@ -23,6 +25,17 @@ import {
   FilterList as FilterListIcon,
 } from '@material-ui/icons';
 
+const useStyle = makeStyles((theme) => ({
+  footer: {
+      marginLeft: '-10%',
+      marginRight: '-10%',
+      position: 'absolute',
+      bottom: 0,
+      width: '98%',
+      height: '60px',   /* Height of the footer */
+  }
+}));
+
 const selectedPackagesForURL = (listOfSelectedPackages, history) => {
   if (listOfSelectedPackages.length === 0) history.push('/compare');
 
@@ -31,6 +44,7 @@ const selectedPackagesForURL = (listOfSelectedPackages, history) => {
 }
 
 const Compare = () => {
+  const classes = useStyle();
   const searchPackages = useLocation().search;
   const history = useHistory();
 
@@ -175,24 +189,35 @@ const handleDontPinLibrary = useCallback((event) => {
       </div>
 
       {listOfSearchedLibraries[0] !== undefined && listOfSearchedLibraries.length > 0 ? (
-        <Grid container spacing={2}>
-          {listOfSearchedLibraries.map((curr, index) => (
-            <Grid key={index} item xs={12} sm={12} md={6} lg={4}>
-              <CompareCard 
-                cardData={curr} 
-                dropLibraryFunc={() => handledropLibrary(index)}
-                pinLibraryFunc={() => handlePinLibrary(index)}
-                dontPinLibraryFunc={() => handleDontPinLibrary(index)}
-              />
-            </Grid>
-          ))}
-        </Grid>
+        <>
+          <Grid container spacing={2}>
+            {listOfSearchedLibraries.map((curr, index) => (
+              <Grid key={index} item xs={12} sm={12} md={6} lg={4}>
+                <CompareCard 
+                  cardData={curr} 
+                  dropLibraryFunc={() => handledropLibrary(index)}
+                  pinLibraryFunc={() => handlePinLibrary(index)}
+                  dontPinLibraryFunc={() => handleDontPinLibrary(index)}
+                />
+              </Grid>
+            ))}
+          </Grid>
+          <div>
+            <Footer />
+          </div>
+        </>
       ):(
-        <Typography variant='h4' style={{textAlign: 'center'}}>
-          <Box fontWeight='fontWeightBold'>
-              No packages selected
-          </Box>
-        </Typography>
+        <>
+          <Typography variant='h4' style={{textAlign: 'center'}}>
+            <Box fontWeight='fontWeightBold'>
+                No library selected
+            </Box>
+          </Typography>
+
+          <div className={classes.footer}>
+            <Footer />
+          </div>
+        </>
       )}
     </div>
   );

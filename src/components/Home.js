@@ -1,5 +1,7 @@
 import React, {useCallback, useState} from 'react';
 import librarySummary from '../summary_of_libraries.json';
+import TablePaginatoinActions from './TablePagination';
+import Footer from './Footer';
 import {useHistory} from 'react-router';
 import {compareByName, compareByFinalScore} from './funktions';
 
@@ -34,10 +36,7 @@ import {
     FilterList as FilterListIcon,
     Search as SearchIcon,
     Close as CloseIcon,
-    // ViewWeek as TableColumnIcon
 } from '@material-ui/icons';
-
-import TablePaginatoinActions from './TablePagination';
 
 function filterSummary(arr, searchKey) {
     const reg = new RegExp(searchKey, 'i');
@@ -46,11 +45,11 @@ function filterSummary(arr, searchKey) {
 
 const goToCompare = (history, selectedPackages) => {
     if(selectedPackages.length > 0) {
-        history.push(`/test-app/compare?query=${selectedPackages.join(',')}`);
+        history.push(`/compare?query=${selectedPackages.join(',')}`);
         return;
     }
 
-    history.push('/test-app/compare');
+    history.push('/compare');
 }
 
 const Home = () => {
@@ -345,6 +344,7 @@ const Home = () => {
                     </Button>
                 </Tooltip>
             </div>
+            <Footer />
         </>
     )
 }

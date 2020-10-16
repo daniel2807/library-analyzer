@@ -1,6 +1,7 @@
 import React from 'react';
 import {
-    BrowserRouter as Router,
+    HashRouter,
+    // BrowserRouter as Router,
     Switch,
     Route,
     Link
@@ -20,12 +21,12 @@ import logo from './Icons/logo-mw-2x.png';
 import './styles/Router.css';
 
 const SideRouter = () => (
-    <Router>
+    <HashRouter basename='/'>
         <AppBar>
             <Toolbar style={{backgroundColor: 'rgb(40, 40, 40)'}}>
                 {/* <Tooltip title='home'> */}
                     <Button style={{width: 200}}>
-                        <Link to='/test-app/'>
+                        <Link to='/'>
                             <img alt="MaibornWolff" height="50" src={logo} />
                         </Link>
                     </Button>
@@ -34,18 +35,18 @@ const SideRouter = () => (
                 
                 {/* <Tooltip title='compare without choosen libraries'> */}
                     <Button style={{width: 200, marginLeft: '10%'}}>
-                        <Link to='/test-app/compare'>Compare</Link>
+                        <Link to='/compare'>Compare</Link>
                     </Button>
                 {/* </Tooltip> */}
             </Toolbar>
         </AppBar>
 
         <Switch>
-            <Route exact path='/test-app/' component={Home} />
-            <Route exact path='/test-app/compare' component={Compare} />
+            <Route exact path='/' component={Home} />
+            <Route exact path='/compare' component={Compare} />
             <Route component={Error} />
         </Switch>
-    </Router>
+    </HashRouter>
 );
 
 export default SideRouter;
