@@ -1,0 +1,20 @@
+.ul-router {
+    display: flex;
+    flex-direction: row;
+}
+
+.li-router {
+    /* width: 200px; */
+    list-style-type: none;
+    /* border: 2px solid white; */
+    padding: 5px;
+    text-align: center;
+}
+
+a:visited {
+    color: white;
+}
+
+a {
+    text-decoration: none;
+}
