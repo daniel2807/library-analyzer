@@ -1,7 +1,6 @@
 import React from 'react';
 import {
     HashRouter,
-    // BrowserRouter as Router,
     Switch,
     Route,
     Link
@@ -11,7 +10,6 @@ import {
     AppBar,
     Toolbar,
     Button,
-    // Tooltip,
 } from '@material-ui/core';
 
 import Home from './Home';
@@ -24,20 +22,16 @@ const SideRouter = () => (
     <HashRouter basename='/'>
         <AppBar>
             <Toolbar style={{backgroundColor: 'rgb(40, 40, 40)'}}>
-                {/* <Tooltip title='home'> */}
-                    <Button style={{width: 200}}>
-                        <Link to='/'>
-                            <img alt="MaibornWolff" height="50" src={logo} />
-                        </Link>
-                    </Button>
-                {/* </Tooltip> */}
+                <Button style={{width: 200}}>
+                    <Link to='/'>
+                        <img alt="MaibornWolff" height="50" src={logo} />
+                    </Link>
+                </Button>
 
-                
-                {/* <Tooltip title='compare without choosen libraries'> */}
-                    <Button style={{width: 200, marginLeft: '10%'}}>
-                        <Link to='/compare'>Compare</Link>
-                    </Button>
-                {/* </Tooltip> */}
+            
+                <Button style={{width: 200, marginLeft: '10%'}}>
+                    <Link to='/compare'>Compare</Link>
+                </Button>
             </Toolbar>
         </AppBar>
 

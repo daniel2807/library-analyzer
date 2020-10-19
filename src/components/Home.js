@@ -29,7 +29,7 @@ import {
     DialogContent,
     IconButton,
     TextField,
-    InputAdornment
+    InputAdornment,
 } from '@material-ui/core';
 
 import {
@@ -185,7 +185,7 @@ const Home = () => {
                                 ),
                                 }}
                             />
-<                           Tooltip title='hide table search'>
+                            <Tooltip title='hide table search'>
                                 <IconButton 
                                     style={{color: 'red'}} 
                                     onClick={() => {
