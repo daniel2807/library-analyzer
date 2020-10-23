@@ -51,9 +51,9 @@ const useStyles = makeStyles({
     },
     pinedLibrary: {
         backgroundColor: 'rgb(250, 240, 240)',
-        // '&.MuiAccordion-root:before': {
-        //     backgroundColor: 'rgb(250, 240, 240)',
-        // },
+        '&.MuiAccordion-root:before': {
+            backgroundColor: 'rgb(250, 240, 240)',
+        },
     },
 })
 

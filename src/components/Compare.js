@@ -138,7 +138,7 @@ const Compare = () => {
       setListOfPinedLibraries([]);
       return;
     }
-    
+
     const choosenList = [...listOfSearchedLibraries];
     const pinedList = [...listOfPinedLibraries];
     const indexOfPinedListItem = pinedList.map((e) => {return e.name}).indexOf(nameOfLibrary);
@@ -223,7 +223,7 @@ const Compare = () => {
         </Menu>
       </div>
 
-      {listOfSearchedLibraries.length > 0 && listOfSearchedLibraries[0] !== undefined ? (
+      {listOfSearchedLibraries.length > 0 ? (
         <>
           <Grid container spacing={2}>
             {listOfPinedLibraries?.map((curr, index) => (
@@ -250,7 +250,7 @@ const Compare = () => {
               ): null
             )}
           </Grid>
-          <div>
+          <div style={{marginTop: '5%'}}>
             <Footer />
           </div>
         </>
