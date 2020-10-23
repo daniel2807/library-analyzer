@@ -45,54 +45,67 @@ const selectedPackagesForURL = (listOfSelectedPackages, history) => {
 
 const Compare = () => {
   const classes = useStyle();
-  const searchPackages = useLocation().search;
+  const searchedUrlPackages = useLocation().search;
   const history = useHistory();
 
   const newLibrarySummary = librarySummary.libraries;
   const filterOptions = ['sort by Score', 'sort by Name', 'sort by Downloads', 'sort by stars'];
+  const localStorageName = 'pinedLibraries';
 
   const [filterButtonAnchor, setFilterButtonAnchor] = useState(null);
-  const [listOfSearchedLibraries, setListOfSearchedLibraries] = useState([newLibrarySummary[0]]);
-  const [listOfPinedLibrariey, setListOfPinedLibraries] = useState([newLibrarySummary[0]]);
+  const [listOfSearchedLibraries, setListOfSearchedLibraries] = useState([]);
+  const [listOfPinedLibraries, setListOfPinedLibraries] = useState([]);
   const [duplicateEntry, setDuplicateEntry] = useState(false);
   const [currentSearchFieldValue, setCurrentSearchFieldValue] = useState('');
 
   useEffect(() => {
-    if(searchPackages === '?query=') history.push('/compare');
-    if(searchPackages) {
-      const selectedPackages = searchPackages.split('?query=')[1].split(',');
-      const arr = [];
-      selectedPackages.forEach(currSelected => {
-          const index = newLibrarySummary.map(currPackage => {return currPackage.name}).indexOf(currSelected);
-          arr.push(newLibrarySummary[index]);
-      })
-      setListOfSearchedLibraries(arr);
-      return;
-    }
+    if(searchedUrlPackages === '?query=') history.push('/compare');
+    if(searchedUrlPackages) {
+      const selectedPackages = searchedUrlPackages.split('?query=')[1].split(',');
+      const listOfChoosenLibraries = [];
 
-    setListOfSearchedLibraries([]);
-  }, [newLibrarySummary, searchPackages, history])
+      selectedPackages.forEach(currSelected => {
+          const index = newLibrarySummary.map(e => {return e.name}).indexOf(currSelected);
+          listOfChoosenLibraries.push(newLibrarySummary[index]);
+      })
+      setListOfSearchedLibraries(listOfChoosenLibraries);
+
+      if(localStorage.getItem(localStorageName)) {
+        const test = JSON.parse(localStorage.getItem(localStorageName));
+        const arr = [];
+
+        test.forEach((testE) => {
+          if(listOfChoosenLibraries.some(listE => listE.name === testE.name)) arr.push(testE);
+        })
+        setListOfPinedLibraries(arr);
+      }
+    } 
+  }, [newLibrarySummary, searchedUrlPackages, history])
 
   const handleMenuClose = useCallback((event, index) => {
     switch(index) {
         case 0:
           setListOfSearchedLibraries([...listOfSearchedLibraries.sort(compareByFinalScore)]);
+          setListOfPinedLibraries([...listOfPinedLibraries.sort(compareByFinalScore)]);
           break;
         case 1:
           setListOfSearchedLibraries([...listOfSearchedLibraries.sort(compareByName)]);
+          setListOfPinedLibraries([...listOfPinedLibraries.sort(compareByName)]);
           break;
         case 2:
           setListOfSearchedLibraries([...listOfSearchedLibraries.sort(compareByDownloads)]);
+          setListOfPinedLibraries([...listOfPinedLibraries.sort(compareByDownloads)]);
           break;
         case 3:
           setListOfSearchedLibraries([...listOfSearchedLibraries.sort(compareByStars)]);
+          setListOfPinedLibraries([...listOfPinedLibraries.sort(compareByStars)]);
           break;
         default:
           console.error('something went wrong with the menu')
     }
 
     setFilterButtonAnchor(null);
-}, [listOfSearchedLibraries]);
+}, [listOfSearchedLibraries, listOfPinedLibraries]);
 
   const addLibrary = useCallback((event) => {
     if(event.key !== 'Enter') return;
@@ -119,20 +132,42 @@ const Compare = () => {
     }
   }, [newLibrarySummary, currentSearchFieldValue, listOfSearchedLibraries, history]);
 
-const handlePinLibrary = useCallback((event) => {
+  const handledropLibrary = useCallback((nameOfLibrary) => {
+    if(listOfSearchedLibraries.length === 1) {
+      setListOfSearchedLibraries([]);
+      setListOfPinedLibraries([]);
+      return;
+    }
+    
+    const choosenList = [...listOfSearchedLibraries];
+    const pinedList = [...listOfPinedLibraries];
+    const indexOfPinedListItem = pinedList.map((e) => {return e.name}).indexOf(nameOfLibrary);
+    const indexOfChoosenListItem = choosenList.map((e) => {return e.name}).indexOf(nameOfLibrary);
 
-}, []);
+    if(indexOfPinedListItem !== -1) {
+      pinedList.splice(indexOfPinedListItem, 1);
+      setListOfPinedLibraries(pinedList);
+      localStorage.setItem(localStorageName, JSON.stringify(pinedList));
+    }
 
-const handleDontPinLibrary = useCallback((event) => {
+    choosenList.splice(indexOfChoosenListItem, 1);
+    setListOfSearchedLibraries(choosenList);
+    selectedPackagesForURL(choosenList, history);
+  }, [history, listOfSearchedLibraries, listOfPinedLibraries]);
 
-}, []);
+  const addPinedLibrary = useCallback((index) => {
+    const pinedList = [...listOfPinedLibraries];
+    pinedList.push(listOfSearchedLibraries[index]);
+    setListOfPinedLibraries(pinedList);
+    localStorage.setItem(localStorageName, JSON.stringify(pinedList));
+  }, [listOfPinedLibraries, listOfSearchedLibraries]);
 
-  const handledropLibrary = useCallback((index) => {
-    const list = [...listOfSearchedLibraries];
-    list.splice(index, 1);
-    setListOfSearchedLibraries(list);
-    selectedPackagesForURL(list, history);
-  }, [history, listOfSearchedLibraries])
+  const dropPinedLibrary = useCallback((index) => {
+    const pinedList = [...listOfPinedLibraries];
+    pinedList.splice(index, 1);
+    setListOfPinedLibraries(pinedList);
+    localStorage.setItem(localStorageName, JSON.stringify(pinedList));
+  }, [listOfPinedLibraries]);
 
   return (
     <div style={{margin: '100px 10%'}}>
@@ -188,19 +223,32 @@ const handleDontPinLibrary = useCallback((event) => {
         </Menu>
       </div>
 
-      {listOfSearchedLibraries[0] !== undefined && listOfSearchedLibraries.length > 0 ? (
+      {listOfSearchedLibraries.length > 0 && listOfSearchedLibraries[0] !== undefined ? (
         <>
           <Grid container spacing={2}>
-            {listOfSearchedLibraries.map((curr, index) => (
+            {listOfPinedLibraries?.map((curr, index) => (
               <Grid key={index} item xs={12} sm={12} md={6} lg={4}>
                 <CompareCard 
                   cardData={curr} 
-                  dropLibraryFunc={() => handledropLibrary(index)}
-                  pinLibraryFunc={() => handlePinLibrary(index)}
-                  dontPinLibraryFunc={() => handleDontPinLibrary(index)}
+                  dropLibraryFunc={() => handledropLibrary(curr.name)}
+                  pined={true}
+                  pinFunc={() => dropPinedLibrary(index)}
                 />
               </Grid>
             ))}
+          
+            {listOfSearchedLibraries?.map((curr, index) => 
+              !listOfPinedLibraries.some(el => el.name === curr.name) ? (
+                <Grid key={index} item xs={12} sm={12} md={6} lg={4}>
+                  <CompareCard 
+                    cardData={curr} 
+                    dropLibraryFunc={() => handledropLibrary(curr.name)}
+                    pined={false}
+                    pinFunc={() => addPinedLibrary(index)}
+                  />
+                </Grid>
+              ): null
+            )}
           </Grid>
           <div>
             <Footer />

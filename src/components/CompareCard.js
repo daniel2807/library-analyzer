@@ -49,6 +49,12 @@ const useStyles = makeStyles({
           backgroundColor: 'white',
       },
     },
+    pinedLibrary: {
+        backgroundColor: 'rgb(250, 240, 240)',
+        // '&.MuiAccordion-root:before': {
+        //     backgroundColor: 'rgb(250, 240, 240)',
+        // },
+    },
 })
 
 const getCardSubheader = (date, version, license, filesize) => {
@@ -79,55 +85,60 @@ const Alert = (props) => {
 
 const CompareCard = (props) => {
     const classes = useStyles();
-    const {cardData, dropLibraryFunc, pinLibraryFunc, dontPinLibraryFunc} = props;
+    const {cardData, dropLibraryFunc, pined, pinFunc} = props;
     const copyNpmDownloadLink = 'npm i ' + cardData.name;
     const copyYarnDownloadLink = 'yarn add ' + cardData.name;
 
-    const [open, setOpen] = useState(false);
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [clipboardAnswer, setClipboardAnswer] = useState('error');
     const [dependencies, setDependencies] = useState([]);
 
     useEffect(() => {
-        if (cardData.dependencies) setDependencies(Object.keys(cardData.dependencies))
+        if (cardData.dependencies) setDependencies(Object.keys(cardData.dependencies));
     }, [cardData.dependencies])
 
     const handleChipClick = (copyLink) => {
         navigator.clipboard.writeText(copyLink).then(function() {
-            setOpen(true);
+            setSnackbarOpen(true);
             setClipboardAnswer('success');
         }, function() {
-            setOpen(true);
+            setSnackbarOpen(true);
             setClipboardAnswer('error');
         })
     }
 
     const handleCloseSnackbar = (event, reason) => {
         if (reason === 'clickaway') return;
-        setOpen(false);
+        setSnackbarOpen(false);
     }
 
     return (
         <>
-            <Card variant='outlined'>
+            <Card 
+                variant='outlined' 
+                className={pined ? classes.pinedLibrary : ''}
+            >
                 <CardHeader 
                     title={cardData.name}
                     subheader={getCardSubheader(cardData.creationDate, cardData.version, cardData.license, cardData.fileSize)}
                     action={
                         <>
-                            <Tooltip title='pin library'>
-                                <IconButton onClick={pinLibraryFunc}>
-                                    <PinIcon />
-                                </IconButton>
-                            </Tooltip>
-
-                            <Tooltip title='dont pin library'>
-                                <IconButton onClick={dontPinLibraryFunc}>
-                                    <DontPinIcon />
-                                </IconButton>
-                            </Tooltip>
+                            {pined ? (
+                                <Tooltip title='dont pin library'>
+                                    <IconButton onClick={pinFunc} color='primary'>
+                                        <DontPinIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            ):(
+                                <Tooltip title='pin library'>
+                                    <IconButton onClick={pinFunc} color='primary'>
+                                        <PinIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            )}
 
                             <Tooltip title='drop library'>
-                                <IconButton onClick={dropLibraryFunc}>
+                                <IconButton onClick={dropLibraryFunc} style={{color: 'rgb(180, 0, 0)'}}>
                                     <DeleteIcon />
                                 </IconButton>
                             </Tooltip>
@@ -184,7 +195,9 @@ const CompareCard = (props) => {
                                 </Box>
                             </Typography>
                         
-                            <Accordion className={classes.hideBorder}>
+                            <Accordion 
+                                className={pined ? [classes.hideBorder, classes.pinedLibrary].join(' ') : classes.hideBorder}
+                                >
                                 <Tooltip title='show depency names'>
                                     <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                                         {dependencies.length}
@@ -273,7 +286,7 @@ const CompareCard = (props) => {
                 </CardActions>
             </Card>
 
-            <Snackbar open={open} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+            <Snackbar open={snackbarOpen} autoHideDuration={5000} onClose={handleCloseSnackbar}>
                 <Alert onClose={handleCloseSnackbar} severity={clipboardAnswer}>
                     Link copied to clipboard
                 </Alert>
