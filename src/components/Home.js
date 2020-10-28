@@ -1,7 +1,8 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useState, useEffect} from 'react';
 import librarySummary from '../summary_of_libraries.json';
 import TablePaginatoinActions from './TablePagination';
 import Footer from './Footer';
+import firebase from './firebase';
 import {useHistory} from 'react-router';
 import {compareByName, compareByFinalScore} from './funktions';
 
@@ -35,7 +36,6 @@ import {
 import {
     FilterList as FilterListIcon,
     Search as SearchIcon,
-    Close as CloseIcon,
 } from '@material-ui/icons';
 
 function filterSummary(arr, searchKey) {
@@ -56,16 +56,21 @@ const Home = () => {
     const history = useHistory();
     const newLibrarySummary = librarySummary.libraries;
     const filterOptions = ['show only selected packages', 'sort by Score', 'sort by Name'];
+
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(20);
     const [filterButtonAnchor, setFilterButtonAnchor] = useState(null);
     const [selectedPackages, setSelectedPackages] = useState([]);
     const [showSelectedPackages, setShowSelectedPackages] = useState(false);
     const [noSelectedPackages, setNoSelectedPackages] = useState(false);
-    const [showSearchField, setShowSearchFiled] = useState(false);
     const [searchFieldInput, setSearchFieldInput] = useState('');
     const [filteredLibrarySummary, setFilteredLibrarySummary] = useState(newLibrarySummary);
+
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, filteredLibrarySummary.length - page * rowsPerPage);
+
+    useEffect(() => {
+        if(!firebase.getCurrentUsername()) history.push('/login');
+    }, [history]);
 
     const handleChangeRowsPerPage = useCallback((event) => {
         setRowsPerPage(parseInt(event.target.value));
@@ -169,49 +174,21 @@ const Home = () => {
             </Dialog>
 
             <div style={{margin: '100px 10%'}}>
+                {/* Hello {firebase.getCurrentUsername()} */}
                 <Paper>
-                    <Toolbar style={{float: 'right'}}>
-                        {showSearchField ? (
-                        <div>
-                            <TextField
-                                placeholder='search packages'
-                                value={searchFieldInput}
-                                onChange={handleSearchFieldChange}
-                                InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <SearchIcon />
-                                    </InputAdornment>
-                                ),
-                                }}
-                            />
-                            <Tooltip title='hide table search'>
-                                <IconButton 
-                                    style={{color: 'red'}} 
-                                    onClick={() => {
-                                        setShowSearchFiled(false); 
-                                        handleSearchFieldChange('');
-                                    }}
-                                >
-                                    <CloseIcon />
-                                </IconButton>
-                            </Tooltip>
-                        </div>
-                        ) : null}
-
-                        <Tooltip title='show table search'>
-                            <span>
-                                <IconButton  
-                                    color='primary' 
-                                    size='medium'
-                                    onClick={() => setShowSearchFiled(true)}
-                                    disabled={showSearchField}
-                                    style={{margin: 20}}
-                                >
+                    <Toolbar style={{float: 'right', backgroundColor: 'rgb(250, 240, 240)'}}>
+                        <TextField
+                            placeholder='search packages'
+                            value={searchFieldInput}
+                            onChange={handleSearchFieldChange}
+                            InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
                                     <SearchIcon />
-                                </IconButton>
-                            </span>
-                        </Tooltip>
+                                </InputAdornment>
+                            ),
+                            }}
+                        />
 
                         <Tooltip title='filter table'>
                             <IconButton 

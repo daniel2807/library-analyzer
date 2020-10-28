@@ -3,6 +3,7 @@ import librarySummary from '../summary_of_libraries.json';
 import {useLocation, useHistory} from 'react-router';
 import CompareCard from './CompareCard';
 import Footer from './Footer';
+import firebase from './firebase';
 import {compareByFinalScore, compareByName, compareByDownloads, compareByStars} from './funktions';
 
 import {
@@ -59,6 +60,10 @@ const Compare = () => {
   const [currentSearchFieldValue, setCurrentSearchFieldValue] = useState('');
 
   useEffect(() => {
+    if(!firebase.getCurrentUsername()) {
+      history.push('/login');
+      return;
+    }
     if(searchedUrlPackages === '?query=') history.push('/compare');
     if(searchedUrlPackages) {
       const selectedPackages = searchedUrlPackages.split('?query=')[1].split(',');

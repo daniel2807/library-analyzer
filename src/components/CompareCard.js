@@ -28,6 +28,7 @@ import {
     DeleteForever as DeleteIcon,
     GitHub as GitHubIcon,
     Star as StarIcon,
+    StarBorder as DontFilledStarIcon,
     GetApp as DownloadIcon,
     BugReport as OpenIssuesIcon,
     NewReleases as RealeasesIcon,
@@ -36,8 +37,6 @@ import {
     FileCopyOutlined as CopyIcon,
     ExpandMore as ExpandMoreIcon,
     OfflineBolt as DependencieIcon,
-    LocationOn as PinIcon,
-    LocationOff as DontPinIcon,
 } from '@material-ui/icons';
 
 const useStyles = makeStyles({
@@ -126,13 +125,13 @@ const CompareCard = (props) => {
                             {pined ? (
                                 <Tooltip title='dont pin library'>
                                     <IconButton onClick={pinFunc} color='primary'>
-                                        <DontPinIcon />
+                                        <StarIcon />
                                     </IconButton>
                                 </Tooltip>
                             ):(
                                 <Tooltip title='pin library'>
                                     <IconButton onClick={pinFunc} color='primary'>
-                                        <PinIcon />
+                                        <DontFilledStarIcon />
                                     </IconButton>
                                 </Tooltip>
                             )}

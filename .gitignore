@@ -4,6 +4,7 @@
 /node_modules
 /node-script/files
 /node-script/node_modules
+/src/components/firebase.js
 /.pnp
 .pnp.js
 
